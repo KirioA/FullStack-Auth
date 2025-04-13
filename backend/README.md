@@ -21,28 +21,60 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# TZ API
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Описание
 
-## Project setup
+Бэкенд-часть проекта TZ на NestJS с использованием JWT аутентификации и Swagger.
+
+## Установка
 
 ```bash
 $ npm install
 ```
 
-## Compile and run the project
+## Настройка переменных окружения
+
+Создайте файл `.env` в корне проекта на основе `.env.example`:
 
 ```bash
-# development
-$ npm run start
+$ cp .env.example .env
+```
 
-# watch mode
+Затем отредактируйте файл `.env`, указав правильные данные для подключения к базе данных и секретный ключ для JWT.
+
+## Запуск приложения
+
+```bash
+# Разработка
 $ npm run start:dev
 
-# production mode
+# Продакшн сборка
+$ npm run build
+
+# Запуск в продакшн режиме
 $ npm run start:prod
 ```
+
+## API документация
+
+Swagger документация доступна по адресу `/api/docs` после запуска сервера.
+
+## Аутентификация
+
+Для доступа к защищенным эндпоинтам используйте JWT токен, полученный при авторизации:
+
+```
+Authorization: Bearer ваш_токен
+```
+
+## Основные эндпоинты
+
+- `POST /auth/registration` - Регистрация нового пользователя
+- `POST /auth/login` - Авторизация пользователя
+- `GET /users` - Получение списка пользователей (требуется аутентификация)
+- `PUT /users/:id` - Обновление данных пользователя (требуется аутентификация)
+- `DELETE /users/:id` - Удаление пользователя (требуется аутентификация)
 
 ## Run tests
 

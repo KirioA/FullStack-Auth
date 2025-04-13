@@ -4,10 +4,15 @@ import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { User } from 'src/users/users.model';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
-    constructor(private userService: UsersService, private jwtService: JwtService) {}
+    constructor(
+        private userService: UsersService, 
+        private jwtService: JwtService,
+        private configService: ConfigService
+    ) {}
 
     async login(userDto: CreateUserDto) {
         const user = await this.validateUser(userDto);
@@ -30,8 +35,13 @@ export class AuthService {
     }
 
     async generateToken(user: User) {
-        const payload = {login: user.login, id: user.id, tabel: user.tabel};
-        return {token: this.jwtService.sign(payload)};
+        try {
+            const payload = {login: user.login, id: user.id, tabel: user.tabel};
+            const token = this.jwtService.sign(payload);
+            return {token};
+        } catch (error) {
+            throw new HttpException('Ошибка при создании токена', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     private async validateUser(userDto: CreateUserDto) {
@@ -53,7 +63,4 @@ export class AuthService {
         }
         throw new UnauthorizedException({message: 'Некорректный пароль'})
     }
-
-    
-    
 }
