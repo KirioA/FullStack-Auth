@@ -1,12 +1,13 @@
 import { Controller, Post, Body, Get, UsePipes, ValidationPipe, Put, Delete, Param, ParseIntPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { ApiOperation, ApiResponse  } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { User } from './users.model';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { UseGuards } from '@nestjs/common';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+
 @ApiTags('Users')
+@ApiBearerAuth()
 @Controller('users')
 export class UsersController {
 
@@ -17,7 +18,7 @@ export class UsersController {
     @ApiResponse({ status: 200, type: User })
     @ApiResponse({ status: 400, description: 'Bad Request' })
     @UsePipes(ValidationPipe)
-    @UseGuards(JwtAuthGuard)
+    @Auth()
     create(@Body() userDto: CreateUserDto) {
         return this.usersService.createUser(userDto);
     }
@@ -26,7 +27,7 @@ export class UsersController {
     @Get()
     @ApiOperation({ summary: 'Get all users' })
     @ApiResponse({ status: 200, type: [User] })
-    @UseGuards(JwtAuthGuard)
+    @Auth()
     getAll() {
         return this.usersService.getAllUsers();
     }
@@ -36,7 +37,7 @@ export class UsersController {
     @ApiResponse({ status: 200, type: User })
     @ApiResponse({ status: 404, description: 'Not Found' })
     @UsePipes(ValidationPipe)
-    @UseGuards(JwtAuthGuard)
+    @Auth()
     update(@Param('id', ParseIntPipe) id: number, @Body() userDto: CreateUserDto) {
         return this.usersService.updateUser(id, userDto);
     }
@@ -45,7 +46,7 @@ export class UsersController {
     @ApiOperation({ summary: 'Delete user' })
     @ApiResponse({ status: 200, description: 'User deleted successfully' })
     @ApiResponse({ status: 404, description: 'Not Found' })
-    @UseGuards(JwtAuthGuard)
+    @Auth()
     delete(@Param('id', ParseIntPipe) id: number) {
         return this.usersService.deleteUser(id);
     }
